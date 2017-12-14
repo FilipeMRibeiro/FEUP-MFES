@@ -1,0 +1,26 @@
+class Doctor
+
+types
+	public String = seq1 of char;
+
+values
+
+instance variables
+	private name: String;
+	private patients: set of Patient := {};
+		
+operations
+	--Doctor constructor
+	public Doctor: String ==> Doctor
+	Doctor(n) == (
+	name := n;
+	return self)
+	post patients = {} and name = n;
+	
+
+functions
+
+traces
+
+
+end Doctor

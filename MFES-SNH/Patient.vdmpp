@@ -1,0 +1,24 @@
+class Patient
+
+types
+	public String = seq1 of char;
+
+values
+
+instance variables
+	name: String;
+		
+operations
+	--Patient constructor
+	public Patient: String ==> Patient
+	Patient(n) == (
+	name := n; 
+	return self)
+	post name =n;
+	
+functions
+
+traces
+
+
+end Patient
