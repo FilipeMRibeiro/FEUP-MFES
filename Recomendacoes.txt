@@ -1,0 +1,8 @@
+Recomendções do prof:
+
+-> sistema do ponto de vista do user que procura um hospital numa rede
+- Hospitais: especialidades, tempos de espera das mesmas, sistemas de saude/acordos
+- Medicos: pertencem à rede e estão integrados em um ou mais hospitais
+- User: pode estar registado no sistema, histórico de utilização
+- Marcação de consulta (user registado)
+- pesquisa segundo critérios (especialidades, tempo de espera, médico, ...)
