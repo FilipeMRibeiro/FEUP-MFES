@@ -1,0 +1,6 @@
+create p := new Patient("pat")
+create h := new Hospital("hosp")
+create d := new Doctor("doc")
+print d.addPatient(p)
+print h.addDoctor(d)
+print p.setDiagnosis("diag")
