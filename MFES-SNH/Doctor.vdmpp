@@ -4,30 +4,44 @@ types
 	public String = Utils`String;
 
 instance variables
+	private id: nat1;
 	private name: String;
-	private patients: set of Patient := {};
+	private users: set of User := {};
+	
+	--ids should always be unique
+	/*
+	inv not exists u1, u2 in set users & u1 <> u2 and u1.getId() = u2.getId();
+	*/
 		
 operations
 	--Doctor constructor
-	public Doctor: String ==> Doctor
-	Doctor(n) == (
-	name := n;
+	public Doctor: nat1 ==> Doctor
+	Doctor(i) == (
+	id := i;
 	return self)
-	post patients = {} and name = n;
+	post users = {} and id = i;
 	
 	--Get doctor's name
 	public getName: () ==> String
 	getName() == (return name);
 	
-	--Get doctor's patients
-	public getPatients: () ==> set of Patient
-	getPatients() == (return patients);
+	--Get doctor's users
+	public getUsers: () ==> set of User
+	getUsers() == (return users);
 	
-	--Assign a patient to doctor
-	public addPatient: Patient ==> ()
-	addPatient(p) == (patients := {p} union patients;)
-	pre not p in set patients
-	post patients = {p} union patients~;
+	--Assign a user to doctor
+	public addUser: User ==> ()
+	addUser(p) == (users := {p} union users;)
+	pre not p in set users
+	post users = {p} union users~;
+	
+	--Set doctor name
+	public setName: String ==> ()
+	setName(n) == (name := n);
+	
+	--Get doctor id
+	public getId: () ==> nat1
+	getId() == (return id);
 	
 	
 end Doctor

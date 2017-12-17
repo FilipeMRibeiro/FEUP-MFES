@@ -17,3 +17,8 @@ functions
 traces
 
 end Utils
+
+--TODO:
+	-- get ID
+	-- getName
+	-- setName

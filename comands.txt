@@ -1,6 +1,18 @@
-create p := new Patient("pat")
-create h := new Hospital("hosp")
-create d := new Doctor("doc")
-print d.addPatient(p)
+create n := new Hospitals_net()
+
+create u := new User(1)
+
+create h := new Hospital(2)
+
+create d := new Doctor(3)
+
+print d.addUser(u)
+
 print h.addDoctor(d)
-print p.setDiagnosis("diag")
+
+print u.setDiagnosis("diag")
+
+print n.addHospital(h)
+
+
+

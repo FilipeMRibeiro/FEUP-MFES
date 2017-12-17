@@ -1,50 +1,55 @@
-class Hospital
+class Hospitals_net
 
 types
 	public String = Utils`String;
 
 instance variables
-	private id: nat1;
+	private hospitals: set of Hospital := {};
 	private doctors: set of Doctor := {};
 	private users: set of User := {};
 	
-	
 	--ids should always be unique
 	/*
+	inv not exists h1, h2 in set hospitals & h1 <> h2 and h1.getId() = h2.getId();
 	inv not exists d1, d2 in set doctors & d1 <> d2 and d1.getId() = d2.getId();
 	inv not exists u1, u2 in set users & u1 <> u2 and u1.getId() = u2.getId();
 	*/
+	
 		
 operations
-	--Hospital constructor
-	public Hospital : nat1 ==> Hospital
-	Hospital(i) == (
-		id := i;
-		return self)
-	post doctors = {} and users = {} and id = i;
+	--Hospitals_net constructor
+	public Hospitals_net : () ==> Hospitals_net
+	Hospitals_net() == (return self)
+	post hospitals = {} and doctors = {} and users = {} and hospitals = {};
 	
-	--Get the hospital id
-	public getId: () ==> nat1
-	getId() == (return id);
+	--Get the net's hospitals
+	public getHospitals: () ==> set of Hospital
+	getHospitals() == (return hospitals);
 	
-	--Get doctors in hospital
+	--Get doctors in the net
 	public getDoctors: () ==> set of Doctor
 	getDoctors() == (return doctors);
 	
-	--Get users in hospital
+	--Get users in the net
 	public getUsers: () ==> set of User
 	getUsers() == (return users);
 	
-	--Add a doctor to hospital
+	--Add a doctor to net
 	public addDoctor: Doctor ==> ()
 	addDoctor(d) == (doctors := {d} union doctors;)
 	pre not d in set doctors
 	post doctors = {d} union doctors~; --the ~ symbol on the variable indicates the value of the state variable before execution of the operation
 
-	--Add a user to hospital
+	--Add a user to net
 	public addUser: User ==> ()
 	addUser(d) == (users := {d} union users;)
 	pre not d in set users
 	post users = {d} union users~;
-
-end Hospital
+	
+	--Add a hospital to net
+	public addHospital: Hospital ==> ()
+	addHospital(h) == (hospitals := {h} union hospitals;)
+	pre not h in set hospitals
+	post hospitals = {h} union hospitals~;
+	
+end Hospitals_net

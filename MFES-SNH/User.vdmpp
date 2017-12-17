@@ -1,0 +1,39 @@
+class User
+
+types
+	public String = Utils`String;
+
+instance variables
+	private id: nat1; 
+	private name: String;
+	private diagnosis: String;
+		
+operations
+	--User constructor
+	public User: nat1 ==> User
+	User(i) == (
+	id := i; 
+	return self)
+	post id =i;
+	
+	--Get user id
+	public getId: () ==> nat1
+	getId() == (return id);
+	
+	--Get user name
+	public getName: () ==> String
+	getName() == (return name);
+	
+	--Get user diagnosis
+	public getDiagnosis: () ==> String
+	getDiagnosis() == (return diagnosis);
+	
+	--Set user diagnosis
+	public setDiagnosis: String ==> ()
+	setDiagnosis(d) == (diagnosis := d);
+	
+	--Set user name	
+	public setName: String ==> ()
+	setName(n) == (name := n;)
+
+end User
