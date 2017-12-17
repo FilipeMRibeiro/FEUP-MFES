@@ -2,11 +2,12 @@ class Hospital
 
 types
 	public String = Utils`String;
-
+		
 instance variables
 	private id: nat1;
 	private doctors: set of Doctor := {};
-	private users: set of User := {};
+	--private users: set of User := {};   --> users are always assigned to some doctor
+	private specialties: set of String := {};
 	
 	
 	--ids should always be unique
@@ -21,7 +22,7 @@ operations
 	Hospital(i) == (
 		id := i;
 		return self)
-	post doctors = {} and users = {} and id = i;
+	post doctors = {} and id = i;
 	
 	--Get the hospital id
 	public getId: () ==> nat1
@@ -31,9 +32,12 @@ operations
 	public getDoctors: () ==> set of Doctor
 	getDoctors() == (return doctors);
 	
+	
 	--Get users in hospital
+	/*
 	public getUsers: () ==> set of User
 	getUsers() == (return users);
+	*/
 	
 	--Add a doctor to hospital
 	public addDoctor: Doctor ==> ()
@@ -42,9 +46,22 @@ operations
 	post doctors = {d} union doctors~; --the ~ symbol on the variable indicates the value of the state variable before execution of the operation
 
 	--Add a user to hospital
+	/*
 	public addUser: User ==> ()
 	addUser(d) == (users := {d} union users;)
 	pre not d in set users
 	post users = {d} union users~;
-
+	*/
+	
+	--Add Specialty
+	public addSpecialty: String ==> ()
+	addSpecialty(s) == (specialties := {s} union specialties;)
+	pre not s in set specialties
+	post specialties = {s} union specialties~;
+	
+	--Get available specialities
+	public getSpecialties: () ==> set of String
+	getSpecialties() == (return specialties);
+	
+	
 end Hospital

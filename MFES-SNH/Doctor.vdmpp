@@ -6,6 +6,7 @@ types
 instance variables
 	private id: nat1;
 	private name: String;
+	private specialty: String;
 	private users: set of User := {};
 	
 	--ids should always be unique
@@ -42,6 +43,14 @@ operations
 	--Get doctor id
 	public getId: () ==> nat1
 	getId() == (return id);
+	
+	--Get specialty
+	public getSpecialty: () ==> String
+	getSpecialty() == (return specialty);
+	
+	--Set specialty
+	public setSpecialty: String ==> ()
+	setSpecialty(s) == (specialty := s);
 	
 	
 end Doctor

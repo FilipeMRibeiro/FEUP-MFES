@@ -6,13 +6,28 @@ create h := new Hospital(2)
 
 create d := new Doctor(3)
 
+
 print d.addUser(u)
+
+print d.setName("doc")
+
+print d.setSpecialty("spec")
+
 
 print h.addDoctor(d)
 
-print u.setDiagnosis("diag")
+print h.addSpecialty("spec")
+
+
+print u.setName("user1")
+
+print u.setSpecialty("spec")
+
 
 print n.addHospital(h)
+
+
+
 
 
 
