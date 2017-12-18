@@ -28,6 +28,12 @@ print u.setSpecialty("spec")
 
 print n.addHospital(h)
 
+print n.addDoctor(d)
+
+print n.addUser(u)
+
+
+
 
 
 

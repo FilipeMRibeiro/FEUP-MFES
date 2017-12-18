@@ -70,7 +70,7 @@ operations
 			if(s in set hosp.getSpecialties()) then
 				ret := ret union {hosp};
 			return ret;
-		);
+	);
 		
 	--Get all hospitals with a given subsystem
 	public getHospitalsSubsystems: String ==> set of Hospital
@@ -80,7 +80,20 @@ operations
 			if(s in set hosp.getSubsystems()) then
 				ret := ret union {hosp};
 			return ret;
-		);
+	);
 		
+
+	--Get doctor with minimum waiting time for a given specialty
+	public getMinWait: String ==> Doctor
+	getMinWait(s) == (
+		dcl sset: set of Doctor := getSpecialtyDoctors(s);
+		dcl md: Doctor;
+		dcl min: nat := 99;
+		for all doc in set sset do
+			if(doc.waitingTime() < min) then
+				md := doc;
+			return md;
+	);						
+
 			
 end Hospitals_net

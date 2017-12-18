@@ -8,7 +8,7 @@ instance variables
 	private name: String;
 	private specialty: String;
 	private users: set of User := {};
-	
+		
 	--ids should always be unique
 	/*
 	inv not exists u1, u2 in set users & u1 <> u2 and u1.getId() = u2.getId();
@@ -31,7 +31,7 @@ operations
 	public getUsers: () ==> set of User
 	getUsers() == (return users);
 	
-	--Assign a user to doctor
+	--Assign a user to doctor  <=> Schedule a patient
 	public addUser: User ==> ()
 	addUser(p) == (users := {p} union users;)
 	pre not p in set users
@@ -52,6 +52,15 @@ operations
 	--Set specialty
 	public setSpecialty: String ==> ()
 	setSpecialty(s) == (specialty := s);
+	
+	--Get Doctor waiting time
+	public waitingTime: () ==> nat
+	waitingTime() == (
+		dcl count: nat := 0;
+		for all us in set users do
+			(count := count + 1);
+			return count;
+		);
 	
 	
 end Doctor
