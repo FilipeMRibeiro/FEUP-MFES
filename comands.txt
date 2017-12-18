@@ -18,6 +18,8 @@ print h.addDoctor(d)
 
 print h.addSpecialty("spec")
 
+print h.addSubsystem("subs")
+
 
 print u.setName("user1")
 

@@ -71,6 +71,16 @@ operations
 				ret := ret union {hosp};
 			return ret;
 		);
-	
-	
+		
+	--Get all hospitals with a given subsystem
+	public getHospitalsSubsystems: String ==> set of Hospital
+	getHospitalsSubsystems(s) == (
+		dcl ret: set of Hospital := {};
+		for all hosp in set hospitals do
+			if(s in set hosp.getSubsystems()) then
+				ret := ret union {hosp};
+			return ret;
+		);
+		
+			
 end Hospitals_net

@@ -8,6 +8,7 @@ instance variables
 	private doctors: set of Doctor := {};
 	--private users: set of User := {};   --> users are always assigned to some doctor
 	private specialties: set of String := {};
+	private subsystems: set of String := {};
 	
 	
 	--ids should always be unique
@@ -53,7 +54,7 @@ operations
 	post users = {d} union users~;
 	*/
 	
-	--Add Specialty
+	--Add specialty
 	public addSpecialty: String ==> ()
 	addSpecialty(s) == (specialties := {s} union specialties;)
 	pre not s in set specialties
@@ -63,5 +64,14 @@ operations
 	public getSpecialties: () ==> set of String
 	getSpecialties() == (return specialties);
 	
+		--Add subsystem
+	public addSubsystem: String ==> ()
+	addSubsystem(s) == (subsystems := {s} union subsystems;)
+	pre not s in set subsystems
+	post subsystems = {s} union subsystems~;
+	
+	--Get available subsystems
+	public getSubsystems: () ==> set of String
+	getSubsystems() == (return subsystems);	
 	
 end Hospital
