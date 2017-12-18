@@ -19,6 +19,7 @@ operations
 	public Doctor: nat1 ==> Doctor
 	Doctor(i) == (
 	id := i;
+	specialty := "generalist";
 	return self)
 	post users = {} and id = i;
 	

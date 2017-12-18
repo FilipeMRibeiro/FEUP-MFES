@@ -11,7 +11,7 @@ print d.addUser(u)
 
 print d.setName("doc")
 
-print d.setSpecialty("spec")
+print u.setSpecialty("spec")
 
 
 print h.addDoctor(d)

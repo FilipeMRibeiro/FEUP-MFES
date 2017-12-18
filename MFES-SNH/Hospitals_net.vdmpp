@@ -52,4 +52,25 @@ operations
 	pre not h in set hospitals
 	post hospitals = {h} union hospitals~;
 	
+	--Get all doctors from a given specialty
+	public getSpecialtyDoctors: String ==> set of Doctor
+	getSpecialtyDoctors(s) == (
+		dcl ret: set of Doctor := {}; --var local
+		for all doc in set doctors do
+			if(doc.getSpecialty() = s) then
+				ret := ret union {doc};
+		return ret;
+	);		
+	
+	--Get all hospitals with a given specialty
+	public getHospitalsSpecialty: String ==> set of Hospital
+	getHospitalsSpecialty(s) == (
+		dcl ret: set of Hospital := {};
+		for all hosp in set hospitals do
+			if(s in set hosp.getSpecialties()) then
+				ret := ret union {hosp};
+			return ret;
+		);
+	
+	
 end Hospitals_net
