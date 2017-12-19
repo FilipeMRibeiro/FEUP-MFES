@@ -27,11 +27,15 @@ operations
 	
 	--Get the hospital id
 	public getId: () ==> nat1
-	getId() == (return id);
+	getId() == (
+		return id
+	);
 	
 	--Get doctors in hospital
 	public getDoctors: () ==> set of Doctor
-	getDoctors() == (return doctors);
+	getDoctors() == (
+		return doctors
+	);
 	
 	
 	--Get users in hospital
@@ -42,7 +46,9 @@ operations
 	
 	--Add a doctor to hospital
 	public addDoctor: Doctor ==> ()
-	addDoctor(d) == (doctors := {d} union doctors;)
+	addDoctor(d) == (
+		doctors := {d} union doctors
+	;)
 	pre not d in set doctors
 	post doctors = {d} union doctors~; --the ~ symbol on the variable indicates the value of the state variable before execution of the operation
 
@@ -56,22 +62,31 @@ operations
 	
 	--Add specialty
 	public addSpecialty: String ==> ()
-	addSpecialty(s) == (specialties := {s} union specialties;)
+	addSpecialty(s) == (
+		specialties := {s} union specialties
+	;)
 	pre not s in set specialties
 	post specialties = {s} union specialties~;
 	
 	--Get available specialities
 	public getSpecialties: () ==> set of String
-	getSpecialties() == (return specialties);
+	getSpecialties() == (
+		return specialties
+	);
 	
 		--Add subsystem
 	public addSubsystem: String ==> ()
-	addSubsystem(s) == (subsystems := {s} union subsystems;)
+	addSubsystem(s) == (
+		subsystems := {s} union subsystems
+	;)
 	pre not s in set subsystems
 	post subsystems = {s} union subsystems~;
 	
 	--Get available subsystems
 	public getSubsystems: () ==> set of String
-	getSubsystems() == (return subsystems);	
+	getSubsystems() == (
+		return subsystems
+	);
+	
 	
 end Hospital

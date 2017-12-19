@@ -12,28 +12,38 @@ operations
 	--User constructor
 	public User: nat1 ==> User
 	User(i) == (
-	id := i; 
+		id := i; 
 	return self)
 	post id =i;
 	
 	--Get user id
 	public getId: () ==> nat1
-	getId() == (return id);
+	getId() == (
+		return id
+	);
 	
 	--Get user name
 	public getName: () ==> String
-	getName() == (return name);
+	getName() == (
+		return name
+	);
 	
 	--Get user required specialty
 	public getSpecialty: () ==> String
-	getSpecialty() == (return specialty);
+	getSpecialty() == (
+		return specialty
+	);
 	
 	--Set user required specialty
 	public setSpecialty: String ==> ()
-	setSpecialty(d) == (specialty := d);
+	setSpecialty(d) == (
+		specialty := d
+	);
 	
 	--Set user name	
 	public setName: String ==> ()
-	setName(n) == (name := n;)
+	setName(n) == (
+		name := n
+	;)
 
 end User

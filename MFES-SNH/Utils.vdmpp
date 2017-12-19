@@ -10,7 +10,9 @@ instance variables
 operations
 	--Utils constructor
 	public Utils: () ==> Utils
-	Utils() == (return self);
+	Utils() == (
+		return self
+	);
 
 functions
 

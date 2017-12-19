@@ -4,7 +4,14 @@ create u := new User(1)
 
 create h := new Hospital(2)
 
+create hh := new Hospital(5)
+
+create hhh := new Hospital(6)
+
+
 create d := new Doctor(3)
+
+create dd := new Doctor(4)
 
 
 print d.addUser(u)
@@ -15,6 +22,12 @@ print u.setSpecialty("spec")
 
 
 print h.addDoctor(d)
+
+print hh.addDoctor(dd)
+
+print hhh.addDoctor(d)
+
+print hhh.addDoctor(dd)
 
 print h.addSpecialty("spec")
 
@@ -31,11 +44,5 @@ print n.addHospital(h)
 print n.addDoctor(d)
 
 print n.addUser(u)
-
-
-
-
-
-
 
 

@@ -19,36 +19,49 @@ instance variables
 operations
 	--Hospitals_net constructor
 	public Hospitals_net : () ==> Hospitals_net
-	Hospitals_net() == (return self)
+	Hospitals_net() == (
+		return self)
 	post hospitals = {} and doctors = {} and users = {} and hospitals = {};
 	
 	--Get the net's hospitals
 	public getHospitals: () ==> set of Hospital
-	getHospitals() == (return hospitals);
+	getHospitals() == (
+		return hospitals
+	);
 	
 	--Get doctors in the net
 	public getDoctors: () ==> set of Doctor
-	getDoctors() == (return doctors);
+	getDoctors() == (
+		return doctors
+	);
 	
 	--Get users in the net
 	public getUsers: () ==> set of User
-	getUsers() == (return users);
+	getUsers() == (
+		return users
+	);
 	
 	--Add a doctor to net
 	public addDoctor: Doctor ==> ()
-	addDoctor(d) == (doctors := {d} union doctors;)
+	addDoctor(d) == (
+		doctors := {d} union doctors
+	;)
 	pre not d in set doctors
 	post doctors = {d} union doctors~; --the ~ symbol on the variable indicates the value of the state variable before execution of the operation
 
 	--Add a user to net
 	public addUser: User ==> ()
-	addUser(d) == (users := {d} union users;)
+	addUser(d) == (
+		users := {d} union users
+	;)
 	pre not d in set users
 	post users = {d} union users~;
 	
 	--Add a hospital to net
 	public addHospital: Hospital ==> ()
-	addHospital(h) == (hospitals := {h} union hospitals;)
+	addHospital(h) == (
+		hospitals := {h} union hospitals
+	;)
 	pre not h in set hospitals
 	post hospitals = {h} union hospitals~;
 	
@@ -84,8 +97,8 @@ operations
 		
 
 	--Get doctor with minimum waiting time for a given specialty
-	public getMinWait: String ==> Doctor
-	getMinWait(s) == (
+	public getMinWaitDoc: String ==> Doctor
+	getMinWaitDoc(s) == (
 		dcl sset: set of Doctor := getSpecialtyDoctors(s);
 		dcl md: Doctor;
 		dcl min: nat := 99;
@@ -95,5 +108,23 @@ operations
 			return md;
 	);						
 
-			
+	--Return true if a doctor is in a given hospital
+	public docInHospital: Doctor * Hospital ==> bool
+	docInHospital(d, h) == (
+		for all doc in set h.getDoctors() do
+			if(d = doc) then
+			return true;
+		return false;
+	);
+	
+	--Get the hospitals where a given doctor works
+	public docHospitals: Doctor ==> set of Hospital
+	docHospitals(d) == (
+		dcl ret: set of Hospital := {};
+		for all hosp in set hospitals do
+			if(docInHospital(d,hosp)) then
+				ret := ret union {hosp};
+			return ret;
+	);
+		 
 end Hospitals_net

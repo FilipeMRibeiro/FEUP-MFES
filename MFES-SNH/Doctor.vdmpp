@@ -18,40 +18,54 @@ operations
 	--Doctor constructor
 	public Doctor: nat1 ==> Doctor
 	Doctor(i) == (
-	id := i;
-	specialty := "generalist";
-	return self)
+		id := i;
+		specialty := "generalist";
+		return self)
 	post users = {} and id = i;
 	
 	--Get doctor's name
 	public getName: () ==> String
-	getName() == (return name);
+	getName() == (
+		return name
+	);
 	
 	--Get doctor's users
 	public getUsers: () ==> set of User
-	getUsers() == (return users);
+	getUsers() == (
+		return users
+	);
 	
 	--Assign a user to doctor  <=> Schedule a patient
 	public addUser: User ==> ()
-	addUser(p) == (users := {p} union users;)
+	addUser(p) == (
+		users := {p} union users
+	;)
 	pre not p in set users
 	post users = {p} union users~;
 	
 	--Set doctor name
 	public setName: String ==> ()
-	setName(n) == (name := n);
+	setName(n) == (
+		name := n
+	);
 	
 	--Get doctor id
 	public getId: () ==> nat1
-	getId() == (return id);
+	getId() == (
+		return id
+	);
 	
 	--Get specialty
 	public getSpecialty: () ==> String
-	getSpecialty() == (return specialty);
+	getSpecialty() == (
+		return specialty
+	);
 	
 	--Set specialty
 	public setSpecialty: String ==> ()
-	setSpecialty(s) == (specialty := s);
+	setSpecialty(s) == (
+		specialty := s
+	);
 	
 	--Get Doctor waiting time
 	public waitingTime: () ==> nat
@@ -60,7 +74,6 @@ operations
 		for all us in set users do
 			(count := count + 1);
 			return count;
-		);
-	
-	
+	);
+		
 end Doctor
