@@ -1,0 +1,30 @@
+class Test_Hospitals_net
+
+instance variables
+		n: Hospitals_net := new Hospitals_net();
+		u: User := new User(1);
+		h: Hospital := new Hospital(2);
+		hh: Hospital := new Hospital(5);
+		hhh: Hospital := new Hospital(6);
+		d: Doctor := new Doctor(3);
+		dd: Doctor := new Doctor(4);
+		
+operations
+		private assertTrue: bool ==> ()
+    assertTrue(cond) == return
+    pre cond;
+    
+    private testAddHospital: () ==> ()
+    testAddHospital() == 
+    (
+    		n.addHospital(h);
+    		-- assertTrue(n.getHospitals().top() = h);
+    );
+    
+    public static main: () ==> ()
+    main() ==
+    (
+    		new Test_Hospitals_net().testAddHospital();
+    );
+		
+end Test_Hospitals_net

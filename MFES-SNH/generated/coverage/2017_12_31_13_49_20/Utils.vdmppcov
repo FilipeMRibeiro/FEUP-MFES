@@ -1,0 +1,26 @@
+class Utils
+
+types
+	public String = seq1 of char;
+
+values
+
+instance variables
+
+operations
+	--Utils constructor
+	public Utils: () ==> Utils
+	Utils() == (
+		return self
+	);
+
+functions
+
+traces
+
+end Utils
+
+--TODO:
+	-- get ID
+	-- getName
+	-- setName
