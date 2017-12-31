@@ -67,3 +67,5 @@ print n.addDoctor(d)
 print n.addUser(u)
 
 
+print d.setSpecialty("spec")
+print h.addSpecialty("spec")

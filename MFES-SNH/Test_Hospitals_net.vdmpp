@@ -14,17 +14,51 @@ operations
     assertTrue(cond) == return
     pre cond;
     
-    private testAddHospital: () ==> ()
-    testAddHospital() == 
+    private testHospitals_net: () ==> ()
+    testHospitals_net() == 
     (
+    		assertTrue(h not in set n.getHospitals());
     		n.addHospital(h);
-    		-- assertTrue(n.getHospitals().top() = h);
+    		assertTrue(h in set n.getHospitals());
+    		
+    		assertTrue(d not in set n.getDoctors());
+    		n.addDoctor(d);
+    		assertTrue(d in set n.getDoctors());
+    		
+    		assertTrue(n.docInHospital(d,h) = false);
+    		h.addDoctor(d);
+    		assertTrue(n.docInHospital(d,h));
+    		
+    		assertTrue(u not in set n.getUsers());
+    		n.addUser(u);
+    		assertTrue(u in set n.getUsers());
+    		
+    		assertTrue(d not in set n.getSpecialtyDoctors("spec"));
+    		d.setSpecialty("spec");
+    		assertTrue(d in set n.getSpecialtyDoctors("spec"));
+    		
+    		assertTrue("spec" not in set h.getSpecialties());
+    		h.addSpecialty("spec");
+    		assertTrue("spec" in set h.getSpecialties());
+    		
+    		assertTrue(h in set n.getHospitalsSpecialty("spec"));
+    		
+    		assertTrue("subs" not in set h.getSubsystems());
+    		h.addSubsystem("subs");
+    		assertTrue("subs" in set h.getSubsystems());
+    		
+    		assertTrue(h in set n.getHospitalsSubsystems("subs"));
+    		
+    		assertTrue(d = n.getMinWaitDoc("spec"));
+    		
+    		assertTrue(h in set n.docHospitals(d));
+    		
     );
     
     public static main: () ==> ()
     main() ==
     (
-    		new Test_Hospitals_net().testAddHospital();
+    		new Test_Hospitals_net().testHospitals_net();
     );
 		
 end Test_Hospitals_net
