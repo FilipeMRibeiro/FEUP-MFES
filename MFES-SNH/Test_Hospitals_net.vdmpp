@@ -3,6 +3,7 @@ class Test_Hospitals_net
 instance variables
 		n: Hospitals_net := new Hospitals_net();
 		u: User := new User(1);
+		uu: User := new User(7);
 		h: Hospital := new Hospital(2);
 		hh: Hospital := new Hospital(5);
 		hhh: Hospital := new Hospital(6);
@@ -49,9 +50,45 @@ operations
     		
     		assertTrue(h in set n.getHospitalsSubsystems("subs"));
     		
+    		n.addUser(uu);
+    		d.addUser(uu);
+    		dd.setSpecialty("spec");
     		assertTrue(d = n.getMinWaitDoc("spec"));
+    		assertTrue(dd <> n.getMinWaitDoc("spec"));
+    		
+    		
     		
     		assertTrue(h in set n.docHospitals(d));
+    		
+    		assertTrue(h.getId() = 2);
+    		
+    		d.setName("doc");
+    		assertTrue(d.getName() = "doc");
+    		
+    		assertTrue(u not in set d.getUsers());
+    		d.addUser(u);
+    		assertTrue(u in set d.getUsers());
+    		
+    		assertTrue(d.getId() = 3);
+    		
+    		
+    		assertTrue(u.getId() = 1);
+    		
+    		u.setName("user1");
+    		assertTrue(u.getName() = "user1");
+    		
+    		u.setSpecialty("spec");
+    		assertTrue(u.getSpecialty() = "spec");
+    		
+    		u.setPassword("pass");
+    		assertTrue(u.getPassword() = "pass");
+    		
+    		u.setUsername("user");
+    		assertTrue(u.getUsername() = "user");
+    		
+    		--u.setLoggedIn(true);
+    		u.login("user", "pass");
+    		assertTrue(u.getLoggedIn());
     		
     );
     
