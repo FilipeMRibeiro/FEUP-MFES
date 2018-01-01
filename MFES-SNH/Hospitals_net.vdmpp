@@ -1,7 +1,7 @@
 class Hospitals_net
 
 types
-	public String = Utils`String;
+	public String = StringUtils`String;
 
 instance variables
 	private hospitals: set of Hospital := {};

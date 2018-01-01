@@ -1,7 +1,7 @@
 class Doctor
 
 types
-	public String = Utils`String;
+	public String = StringUtils`String;
 
 instance variables
 	private id: nat1;

@@ -1,4 +1,4 @@
-class Utils
+class StringUtils
 
 types
 	public String = seq1 of char;
@@ -9,8 +9,8 @@ instance variables
 
 operations
 	--Utils constructor
-	public Utils: () ==> Utils
-	Utils() == (
+	public StringUtils: () ==> StringUtils
+	StringUtils() == (
 		return self
 	);
 
@@ -18,7 +18,7 @@ functions
 
 traces
 
-end Utils
+end StringUtils
 
 --TODO:
 	-- get ID
