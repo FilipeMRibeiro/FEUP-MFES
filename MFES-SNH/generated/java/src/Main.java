@@ -260,7 +260,7 @@ public class Main {
                 createDoctor();
                 break;
             case 2:
-                editDoctor();
+                editDoctors();
                 break;
             case 3:
                 exploreDoctors();
@@ -341,9 +341,9 @@ public class Main {
     public static void createHospital() {
         resetChoice();
         printSeparator();
-        System.out.println("Hospital added. ID := " + nrHospitals++ + "\n");
+        System.out.println("Hospital added. ID := " + nrHospitals + "\n");
         //TODO: save to file
-        Hospital h = new Hospital(nrHospitals);
+        Hospital h = new Hospital(nrHospitals++);
         hn.addHospital(h);
 
         addDoctor(h, "hospitalsMenu");
@@ -409,10 +409,30 @@ public class Main {
         doctorsMenu();
     }
 
-    public static void editDoctor() {
-        //TODO: choose doctor
+    public static void editDoctors() {
+        resetChoice();
+        printSeparator();
+        System.out.println("Doctors\n");
 
-        //TODO: add user or change specialty
+        do {
+            selectDoctors();
+        }
+        while (parseInput() != 0);
+
+        if (choice == 0) {
+            doctorsMenu();
+            return;
+        }
+        else {
+            Iterator it = hn.getDoctors().iterator();
+            while (it.hasNext()) {
+                Doctor d = (Doctor) it.next();
+
+                if ((int) d.getId() == choice) {
+                    editDoctor(d);
+                }
+            }
+        }
     }
 
     public static void exploreDoctors() {
@@ -429,7 +449,7 @@ public class Main {
     }
 
     public static void loggedInMenu() {
-        //TODO: choose doctor -> by name, hospital or specialty; list of my doctors
+        //TODO: choose doctor -> by name, hospital or specialty; list of my doctors, list of my hospitals (?)
     }
 
     public static void selectDoctors(Hospital h, String context) {
@@ -513,7 +533,7 @@ public class Main {
             longMenuEntry(tmp.toString(), (int) tmp.getId());
         }
 
-        longMenuEntry("Finish", 0);
+        longMenuEntry("Click any number to exit", 0);
     }
 
     public static void displaySpecialties(Hospital h) {
@@ -595,6 +615,40 @@ public class Main {
         }
     }
 
+    public static void editDoctor(Doctor d) {
+        resetChoice();
+        printSeparator();
+        System.out.println(d);
+
+        do {
+            if (choice > 0 && choice < 2) {
+                break;
+            }
+
+            shortMenuEntry("Change Name", 1);
+            shortMenuEntry("Change Specialty", 2);
+            System.out.println();
+            shortMenuEntry("Back", 0);
+        }
+        while (parseInput() != 0);
+
+        switch (choice) {
+            case 0:
+                editDoctors();
+                break;
+            case 1:
+                changeDocName(d);
+                break;
+            case 2:
+                changeDocSpecialty(d);
+                break;
+            default:
+                break;
+        }
+
+        editDoctors();
+    }
+
     public static void addDoctor(Hospital h, String context) {
         resetChoice();
         printSeparator();
@@ -628,5 +682,31 @@ public class Main {
                 }
             }
         }
+    }
+
+    public static void changeDocName(Doctor d) {
+        resetChoice();
+        printSeparator();
+
+        System.out.print("New Name: ");
+        String name = scanner.nextLine();
+
+        //TODO: save to file
+        d.setName(name);
+
+        editDoctors();
+    }
+
+    public static void changeDocSpecialty(Doctor d) {
+        resetChoice();
+        printSeparator();
+
+        System.out.print("New Specialty: ");
+        String specialty = scanner.nextLine();
+
+        //TODO: save to file
+        d.setSpecialty(specialty);
+
+        editDoctors();
     }
 }
