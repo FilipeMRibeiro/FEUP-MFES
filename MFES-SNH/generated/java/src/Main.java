@@ -1,3 +1,5 @@
+import org.overture.codegen.runtime.VDMSet;
+
 import javax.print.Doc;
 import java.util.InputMismatchException;
 import java.util.Iterator;
@@ -7,6 +9,7 @@ public class Main {
     private static Scanner scanner = new Scanner(System.in);
     private static int choice = -1;
     private static int loggedInUser = -1;
+    private static User user;
     private static int nrHospitals = 1;
     private static int nrDocs = 1;
     private static int nrUsers = 1;
@@ -26,6 +29,9 @@ public class Main {
         Doctor dd = new Doctor(nrDocs++);
         Doctor ddd = new Doctor(nrDocs++);
         Doctor dddd = new Doctor(nrDocs++);
+
+        d.setSpecialty("cardiology");
+        dd.setSpecialty("cardiology");
 
         hn.addHospital(h);
         hn.addHospital(hh);
@@ -282,10 +288,13 @@ public class Main {
         String username = scanner.nextLine();
 
         System.out.print("Password: ");
+        //TODO: show as *******
         String password = scanner.nextLine();
 
         System.out.print("Specialty: ");
         String specialty = scanner.nextLine();
+
+        //TODO: check unique username
 
         //TODO: save to file
         User u = new User(nrUsers++);
@@ -309,6 +318,7 @@ public class Main {
             String username = scanner.nextLine();
 
             System.out.print("Password: ");
+            //TODO: show as *******
             String password = scanner.nextLine();
 
             Iterator it = hn.getUsers().iterator();
@@ -319,6 +329,7 @@ public class Main {
                     tmp.login(username, password);
                     if (tmp.getLoggedIn()){
                         loggedInUser = (int) tmp.getId();
+                        user = tmp;
                         break;
                     }
                 }
@@ -332,10 +343,6 @@ public class Main {
 
         loggedInMenu();
 
-    }
-
-    public static void logout() {
-        //TODO: logout
     }
 
     public static void createHospital() {
@@ -449,7 +456,40 @@ public class Main {
     }
 
     public static void loggedInMenu() {
-        //TODO: choose doctor -> by name, hospital or specialty; list of my doctors, list of my hospitals (?)
+        resetChoice();
+        printSeparator();
+        System.out.println("Pacient Menu\n");
+
+        do {
+            if (choice > 0 && choice < 2) {
+                break;
+            }
+
+            shortMenuEntry("Choose Doctor", 1);
+            shortMenuEntry("Change Specialty", 2);
+            shortMenuEntry("Explore", 3);
+            System.out.println();
+            shortMenuEntry("Logout", 0);
+        }
+        while (parseInput() != 0);
+
+        switch (choice) {
+            case 0:
+                loggedInUser = -1;
+                mainMenu();
+                break;
+            case 1:
+                chooseDoctor();
+                break;
+            case 2:
+                //TODO: change specialty
+                break;
+            case 3:
+                displayDoctors(user);
+                break;
+            default:
+                break;
+        }
     }
 
     public static void selectDoctors(Hospital h, String context) {
@@ -475,10 +515,13 @@ public class Main {
             else if (context.equals("hospitalsMenu")){
                 hospitalsMenu();
             }
+            else if (context.equals("chooseDoctor")){
+                chooseDoctor();
+            }
             return;
         }
 
-        longMenuEntry("Finish", 0);
+        shortMenuEntry("Finish", 0);
     }
 
     public static void selectDoctors() {
@@ -521,6 +564,10 @@ public class Main {
         }
 
         longMenuEntry("Finish", 0);
+    }
+
+    public static void displayDoctors(User u) {
+        //TODO: display my doctors
     }
 
     public static void displayDoctors() {
@@ -706,7 +753,195 @@ public class Main {
 
         //TODO: save to file
         d.setSpecialty(specialty);
+        //TODO: add spectialty to hospitals where doctor works
 
         editDoctors();
+    }
+
+    public static void chooseDoctor() {
+        resetChoice();
+        printSeparator();
+        System.out.println("Choose Doctor\n");
+
+        do {
+            if (choice > 0 && choice < 2) {
+                break;
+            }
+
+            shortMenuEntry("By Name", 1);
+            shortMenuEntry("By Hospital", 2);
+            shortMenuEntry("By Specialty", 3);
+            System.out.println();
+            shortMenuEntry("Back", 0);
+        }
+        while (parseInput() != 0);
+
+        switch (choice) {
+            case 0:
+                loggedInMenu();
+                break;
+            case 1:
+                docByName();
+                break;
+            case 2:
+                docByHospital();
+                break;
+            case 3:
+                docBySpecialty();
+                break;
+            default:
+                break;
+        }
+    }
+
+    public static void docByName() {
+        resetChoice();
+        printSeparator();
+        System.out.println("Choose Doctor\n");
+
+        do {
+            selectDoctors();
+        }
+        while (parseInput() != 0);
+
+        if (choice == 0) {
+            chooseDoctor();
+            return;
+        }
+        else {
+            Iterator it = hn.getDoctors().iterator();
+            while (it.hasNext()) {
+                Doctor d = (Doctor) it.next();
+
+                if ((int) d.getId() == choice) {
+                    if (!d.getUsers().contains(user)) {//TODO: test this
+                        d.addUser(user);
+                    }
+                    chooseDoctor();
+                    return;
+                }
+            }
+        }
+    }
+
+    public static void docByHospital() {
+        resetChoice();
+        printSeparator();
+        System.out.println("Choose Hospital\n");
+
+        do {
+            selectHospitals();
+        }
+        while (parseInput() != 0);
+
+        if (choice == 0) {
+            chooseDoctor();
+            return;
+        }
+        else {
+            Iterator it = hn.getHospitals().iterator();
+            while (it.hasNext()) {
+                Hospital h = (Hospital) it.next();
+
+                if ((int) h.getId() == choice) {
+                    do {
+                        selectDoctors(h, "chooseDoctor");
+                    }
+                    while (parseInput() != 0);
+
+                    if (choice == 0) {
+                        chooseDoctor();
+                        return;
+                    }
+                    else {
+                        Iterator ite = hn.getDoctors().iterator();
+                        while(ite.hasNext()) {
+                            Doctor tmp = (Doctor) ite.next();
+                            if ((int) tmp.getId() == choice) {
+                                if (!tmp.getUsers().contains(user)) {//TODO: test this
+                                    tmp.addUser(user);
+                                }
+                                chooseDoctor();
+                                return;
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
+    }
+
+    public static void docBySpecialty() {
+        resetChoice();
+        printSeparator();
+        String specialty = user.getSpecialty();
+        System.out.println("By specialty: " + specialty + "\n");
+
+        do {
+            if (choice > 0 && choice < 2) {
+                break;
+            }
+
+            shortMenuEntry("Normal Appointment", 1);
+            shortMenuEntry("Emergency Appointment", 2);
+            System.out.println();
+            shortMenuEntry("Back", 0);
+        }
+        while (parseInput() != 0);
+
+        switch (choice) {
+            case 0:
+                chooseDoctor();
+                break;
+            case 1:
+                specDoc(specialty);
+                break;
+            case 2:
+                Doctor d = hn.getMinWaitDoc(specialty);
+                d.addUser(user);
+                //TODO: maybe display name instead of id
+                System.out.println("Appointment scheduled with Doctor " + d.getId());
+                chooseDoctor();
+                break;
+            default:
+                break;
+        }
+
+
+    }
+
+    public static void specDoc(String specialty) {
+        VDMSet specDocs = hn.getSpecialtyDoctors(specialty);
+
+        do {
+            resetChoice();
+            printSeparator();
+            Iterator it = specDocs.iterator();
+            while (it.hasNext()) {
+                Doctor tmp = (Doctor) it.next();
+                //TODO: maybe display name instead of id
+                shortMenuEntry("Doctor" + tmp.getId(), (int) tmp.getId());
+            }
+
+            shortMenuEntry("Finish", 0);
+        }
+        while (parseInput() != 0);
+
+        if (choice == 0) {
+            chooseDoctor();
+            return;
+        }
+        else {
+            Iterator it = specDocs.iterator();
+            while (it.hasNext()) {
+                Doctor d = (Doctor) it.next();
+
+                if ((int) d.getId() == choice) {
+                    d.addUser(user);
+                }
+            }
+        }
+
     }
 }
