@@ -62,12 +62,12 @@ public class Hospital {
     return "Hospital{"
         + "id := "
         + Utils.toString(id)
-        + ", doctors := "
-        + Utils.toString(doctors)
+        //+ ", doctors := "
+        //+ Utils.toString(doctors)
         + ", specialties := "
         + Utils.toString(specialties)
-        + ", subsystems := "
-        + Utils.toString(subsystems)
+        //+ ", subsystems := "
+        //+ Utils.toString(subsystems)
         + "}";
   }
 }

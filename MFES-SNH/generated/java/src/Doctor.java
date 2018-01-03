@@ -77,8 +77,8 @@ public class Doctor {
         + Utils.toString(name)
         + ", specialty := "
         + Utils.toString(specialty)
-        + ", users := "
-        + Utils.toString(users)
+        //+ ", users := "
+        //+ Utils.toString(users)
         + "}";
   }
 }

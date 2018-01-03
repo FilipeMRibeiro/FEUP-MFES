@@ -1,8 +1,14 @@
 import org.overture.codegen.runtime.VDMSet;
 
+import javax.print.Doc;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Iterator;
 import java.util.Scanner;
+import java.util.stream.Stream;
 
 public class Main {
     private static Scanner scanner = new Scanner(System.in);
@@ -13,15 +19,16 @@ public class Main {
     private static int nrDocs = 1;
     private static int nrUsers = 1;
 
+    private static final boolean autosave = true;
+
     private static Hospitals_net hn = new Hospitals_net();
 
     public static void main(String[] args){
         initDB();
 
-
         //test code
 
-
+/*
         Hospital h = new Hospital(nrHospitals++);
         Hospital hh = new Hospital(nrHospitals++);
         Doctor d = new Doctor(nrDocs++);
@@ -38,7 +45,7 @@ public class Main {
         hn.addDoctor(dd);
         hn.addDoctor(ddd);
         hn.addDoctor(dddd);
-
+*/
 /*        hn.addHospital(h);
         h.addDoctor(d);
         h.addDoctor(dd);
@@ -58,23 +65,201 @@ public class Main {
     }
 
     private static void initDB(){
-        Iterator hi = hn.getHospitals().iterator();
-        Iterator di = hn.getDoctors().iterator();
-        Iterator ui = hn.getUsers().iterator();
+        readUsers();
+        readDoctors();
+        readHospitals();
 
-        while (hi.hasNext()) {
-            nrHospitals++;
+    }
+
+    private static void readUsers() {
+        File file = new File("users.txt");
+
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] user = line.split("#!#");
+
+                User u = new User(Integer.parseInt(user[0]));
+                u.setName(user[1]);
+                u.setSpecialty(user[2]);
+                u.setUsername(user[3]);
+                u.setPassword(user[4]);
+
+                hn.addUser(u);
+                nrUsers++;
+            }
+        }
+        catch (IOException e) {
+            e.printStackTrace();
         }
 
-        while (di.hasNext()) {
-            nrDocs++;
+    }
+
+    private static void readDoctors() {
+        File file = new File("doctors.txt");
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] doctor = line.split("#!#");
+
+                Doctor d = new Doctor(Integer.parseInt(doctor[0]));
+                d.setName(doctor[1]);
+                d.setSpecialty(doctor[2]);
+
+                if (doctor.length > 3) {
+                    String[] users = doctor[3].split("-");
+
+                    for (int i = 0; i < users.length; i++) {
+                        if (!users[i].equals("")) {
+                            for (Object o : hn.getUsers()) {
+                                User u = (User) o;
+
+                                if ((int) u.getId() == Integer.parseInt(users[i])) {
+                                    d.addUser(u);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                hn.addDoctor(d);
+                nrDocs++;
+            }
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void readHospitals() {
+        File file = new File("hospitals.txt");
+
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] hospital = line.split("#!#");
+
+                Hospital h = new Hospital(Integer.parseInt(hospital[0]));
+
+                if (hospital.length > 1) {
+                    String[] doctors = hospital[1].split("-");
+
+                    for (int i = 0; i < doctors.length; i++) {
+                        if (!doctors[i].equals("")) {
+                            for (Object o : hn.getDoctors()) {
+                                Doctor d = (Doctor) o;
+
+                                if ((int) d.getId() == Integer.parseInt(doctors[i])) {
+                                    h.addDoctor(d);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    if (hospital.length > 2) {
+                        String[] specialties = hospital[2].split("-");
+
+                        for (int i = 0; i < specialties.length; i++) {
+                            if (!specialties[i].equals("")) {
+                                h.addSpecialty(specialties[i]);
+                            }
+                        }
+
+                        if (hospital.length > 3) {
+                            String[] subsystems = hospital[3].split("-");
+
+                            for (int i = 0; i < subsystems.length; i++) {
+                                if (!subsystems[i].equals("")) {
+                                    h.addSpecialty(subsystems[i]);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                hn.addHospital(h);
+                nrHospitals++;
+            }
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void saveDB(){
+        try {
+            PrintWriter writer = new PrintWriter("users.txt", "UTF-8");
+
+            for (Object o : hn.getUsers()) {
+                User u = (User) o;
+
+                writer.println(u.getId() + "#!#" + u.getName() + "#!#" + u.getSpecialty() + "#!#" + u.getUsername() + "#!#" + u.getPassword());
+            }
+            writer.close();
+        }
+        catch (FileNotFoundException | UnsupportedEncodingException e) {
+            e.printStackTrace();
         }
 
-        while (ui.hasNext()) {
-            nrUsers++;
+        try {
+            PrintWriter writer = new PrintWriter("doctors.txt", "UTF-8");
+
+            for (Object o : hn.getDoctors()) {
+                Doctor d = (Doctor) o;
+
+                StringBuilder users = new StringBuilder("");
+                for (Object ob : d.getUsers()) {
+                    User u = (User) ob;
+
+                    users.append(u.getId() + "-");
+                }
+
+                writer.println(d.getId() + "#!#" + d.getName() + "#!#" + d.getSpecialty() + "#!#" + users);
+            }
+            writer.close();
+        }
+        catch (FileNotFoundException | UnsupportedEncodingException e) {
+            e.printStackTrace();
         }
 
-        //TODO: read hospitals, doctors and users from file
+        try {
+            PrintWriter writer = new PrintWriter("hospitals.txt", "UTF-8");
+
+            for (Object o : hn.getHospitals()) {
+                Hospital h = (Hospital) o;
+
+                StringBuilder doctors = new StringBuilder("");
+                StringBuilder specialties = new StringBuilder("");
+                StringBuilder subsystems = new StringBuilder("");
+
+                for (Object ob : h.getDoctors()) {
+                    Doctor d = (Doctor) ob;
+
+                    doctors.append(d.getId() + "-");
+                }
+
+                for (Object ob : h.getSpecialties()) {
+                    String s = (String) ob;
+
+                    specialties.append(s + "-");
+                }
+
+                for (Object ob : h.getSubsystems()) {
+                    String s = (String) ob;
+
+                    subsystems.append(s + "-");
+                }
+
+                writer.println(h.getId() + "#!#" + doctors + "#!#" + specialties + "#!#" + subsystems);
+            }
+            writer.close();
+        }
+        catch (FileNotFoundException | UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private static int parseInput() {
@@ -104,7 +289,7 @@ public class Main {
     }
 
     private static void longMenuEntry(String text, int option) {
-        System.out.println(String.format("%-80s- %s" , text, Integer.toString(option) ));
+        System.out.println(String.format("%-90s- %s" , text, Integer.toString(option) ));
     }
 
     private static void mainMenu(){
@@ -126,6 +311,7 @@ public class Main {
 
         switch (choice) {
             case 0:
+                saveDB();
                 return;
             case 1:
                 adminMenu();
@@ -149,8 +335,8 @@ public class Main {
                 break;
             }
 
-            shortMenuEntry("Hospitals Menu", 1);
-            shortMenuEntry("Doctors Menu", 2);
+            shortMenuEntry("Doctors Menu", 1);
+            shortMenuEntry("Hospitals Menu", 2);
             System.out.println();
             shortMenuEntry("Back", 0);
         }
@@ -161,10 +347,10 @@ public class Main {
                 mainMenu();
                 break;
             case 1:
-                hospitalsMenu();
+                doctorsMenu();
                 break;
             case 2:
-                doctorsMenu();
+                hospitalsMenu();
                 break;
             default:
                 break;
@@ -287,7 +473,6 @@ public class Main {
         String username = scanner.nextLine();
 
         System.out.print("Password: ");
-        //TODO: show as *******
         String password = scanner.nextLine();
 
         System.out.print("Specialty: ");
@@ -295,7 +480,6 @@ public class Main {
 
         //TODO: check unique username
 
-        //TODO: save to file
         User u = new User(nrUsers++);
         u.setName(name);
         u.setUsername(username);
@@ -303,6 +487,10 @@ public class Main {
         u.setSpecialty(specialty);
 
         hn.addUser(u);
+
+        if (autosave){
+            saveDB();
+        }
 
         pacientMenu();
     }
@@ -317,7 +505,6 @@ public class Main {
             String username = scanner.nextLine();
 
             System.out.print("Password: ");
-            //TODO: show as *******
             String password = scanner.nextLine();
 
             for (Object o : hn.getUsers()) {
@@ -347,9 +534,11 @@ public class Main {
         resetChoice();
         printSeparator();
         System.out.println("Hospital added. ID := " + nrHospitals + "\n");
-        //TODO: save to file
         Hospital h = new Hospital(nrHospitals++);
         hn.addHospital(h);
+        if (autosave){
+            saveDB();
+        }
 
         addDoctor(h, "hospitalsMenu");
     }
@@ -402,12 +591,15 @@ public class Main {
         System.out.print("Specialty: ");
         String specialty = scanner.nextLine();
 
-        //TODO: save to file
         Doctor d = new Doctor(nrDocs++);
         d.setName(name);
         d.setSpecialty(specialty);
 
         hn.addDoctor(d);
+
+        if (autosave){
+            saveDB();
+        }
 
         doctorsMenu();
     }
@@ -486,34 +678,19 @@ public class Main {
         }
     }
 
-    private static void selectDoctors(Hospital h, String context) {
+    private static void selectDoctors(Hospital h) {
         resetChoice();
-        //TODO: order is reversed
-        Iterator it = hn.getDoctors().iterator();
-        int counter = 0;
 
-        while (it.hasNext()) {
-            Doctor tmp = (Doctor) it.next();
+        for (Object o : hn.getDoctors()) {
+            Doctor tmp = (Doctor) o;
 
             if (!hn.docInHospital(tmp, h)){
-                //TODO: maybe display name instead of id
-                shortMenuEntry("Doctor" + tmp.getId(), (int) tmp.getId());
-                counter++;
+                shortMenuEntry("Doctor" + tmp.getName(), (int) tmp.getId());
             }
         }
 
         if (choice == 0) {
-            switch(context) {
-                case "editHospitals":
-                    editHospitals();
-                    break;
-                case "hospitalsMenu":
-                    hospitalsMenu();
-                    break;
-                case "chooseDoctor":
-                    chooseDoctor();
-                    break;
-            }
+            chooseDoctor();
             return;
         }
 
@@ -522,11 +699,10 @@ public class Main {
 
     private static void selectDoctors() {
         resetChoice();
-        //TODO: order is reversed
+
         for (Object o : hn.getDoctors()) {
             Doctor tmp = (Doctor) o;
-            //TODO: maybe display name instead of id
-            shortMenuEntry("Doctor" + tmp.getId(), (int) tmp.getId());
+            shortMenuEntry("Doctor" + tmp.getName(), (int) tmp.getId());
         }
 
         shortMenuEntry("Finish", 0);
@@ -534,16 +710,12 @@ public class Main {
 
     private static void displayDoctors(Hospital h, String context) {
         resetChoice();
-        //TODO: order is reversed
-        Iterator it = hn.getDoctors().iterator();
-        int counter = 0;
 
-        while (it.hasNext()) {
-            Doctor tmp = (Doctor) it.next();
+        for (Object o : hn.getDoctors()) {
+            Doctor tmp = (Doctor) o;
 
             if (!hn.docInHospital(tmp, h)){
                 longMenuEntry(tmp.toString(), (int) tmp.getId());
-                counter++;
             }
         }
 
@@ -561,7 +733,6 @@ public class Main {
     }
 
     private static void displayDoctors(User u) {
-        //TODO: order is reversed
         for (Object o : hn.getDoctors()) {
             Doctor d = (Doctor) o;
 
@@ -582,7 +753,6 @@ public class Main {
 
     private static void displayDoctors() {
         resetChoice();
-        //TODO: order is reversed
         for (Object o : hn.getDoctors()) {
             Doctor tmp = (Doctor) o;
             longMenuEntry(tmp.toString(), (int) tmp.getId());
@@ -591,30 +761,8 @@ public class Main {
         longMenuEntry("Click any number to exit", 0);
     }
 
-    public static void displaySpecialties(Hospital h) {
-        resetChoice();
-        //TODO: order is reversed
-        Iterator it = h.getSpecialties().iterator();
-        int counter = 0;
-
-        while (it.hasNext()) {
-            String tmp = (String) it.next();
-
-            System.out.println(tmp);
-            counter++;
-        }
-
-        if (choice == 0) {
-            hospitalsMenu();
-            return;
-        }
-
-        longMenuEntry("Back", 0);
-    }
-
     private static void selectHospitals() {
         resetChoice();
-        //TODO: order is reversed
         for (Object o : hn.getHospitals()) {
             Hospital tmp = (Hospital) o;
             shortMenuEntry("Hospital " + tmp.getId(), (int) tmp.getId());
@@ -625,7 +773,6 @@ public class Main {
 
     private static void displayHospitals() {
         resetChoice();
-        //TODO: order is reversed
         for (Object o : hn.getHospitals()) {
             Hospital tmp = (Hospital) o;
             longMenuEntry(tmp.toString(), (int) tmp.getId());
@@ -741,8 +888,11 @@ public class Main {
         System.out.print("New Name: ");
         String name = scanner.nextLine();
 
-        //TODO: save to file
         d.setName(name);
+
+        if (autosave){
+            saveDB();
+        }
 
         editDoctors();
     }
@@ -754,9 +904,11 @@ public class Main {
         System.out.print("New Specialty: ");
         String specialty = scanner.nextLine();
 
-        //TODO: save to file
         d.setSpecialty(specialty);
-        //TODO: add specialty to hospitals where doctor works
+
+        if (autosave){
+            saveDB();
+        }
 
         editDoctors();
     }
@@ -815,7 +967,7 @@ public class Main {
                 Doctor d = (Doctor) o;
 
                 if ((int) d.getId() == choice) {
-                    if (!d.getUsers().contains(user)) {//TODO: test this
+                    if (!d.getUsers().contains(user)) {
                         d.addUser(user);
                     }
                     chooseDoctor();
@@ -844,7 +996,7 @@ public class Main {
 
                 if ((int) h.getId() == choice) {
                     do {
-                        selectDoctors(h, "chooseDoctor");
+                        selectDoctors(h);
                     }
                     while (parseInput() != 0);
 
@@ -856,7 +1008,7 @@ public class Main {
                         for (Object ob : hn.getDoctors()) {
                             Doctor tmp = (Doctor) ob;
                             if ((int) tmp.getId() == choice) {
-                                if (!tmp.getUsers().contains(user)) {//TODO: test this
+                                if (!tmp.getUsers().contains(user)) {
                                     tmp.addUser(user);
                                 }
                                 chooseDoctor();
@@ -898,8 +1050,7 @@ public class Main {
             case 2:
                 Doctor d = hn.getMinWaitDoc(specialty);
                 d.addUser(user);
-                //TODO: maybe display name instead of id
-                System.out.println("Appointment scheduled with Doctor " + d.getId());
+                System.out.println("Appointment scheduled with Doctor " + d.getName());
                 chooseDoctor();
                 break;
             default:
@@ -917,8 +1068,7 @@ public class Main {
             printSeparator();
             for (Object o : specDocs) {
                 Doctor tmp = (Doctor) o;
-                //TODO: maybe display name instead of id
-                shortMenuEntry("Doctor" + tmp.getId(), (int) tmp.getId());
+                shortMenuEntry("Doctor" + tmp.getName(), (int) tmp.getId());
             }
 
             shortMenuEntry("Finish", 0);
@@ -937,7 +1087,7 @@ public class Main {
                 }
             }
         }
-
+        chooseDoctor();
     }
 
     private static void editSpecialty() {
@@ -947,7 +1097,6 @@ public class Main {
         System.out.print("New Specialty: ");
         String specialty = scanner.nextLine();
 
-        //TODO: save to file
         for (Object o: hn.getUsers()) {
             User u = (User) o;
 
@@ -956,6 +1105,10 @@ public class Main {
             }
         }
 
-        editDoctors();
+        if (autosave){
+            saveDB();
+        }
+
+        loggedInMenu();
     }
 }
